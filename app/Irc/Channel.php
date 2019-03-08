@@ -3,6 +3,7 @@
 namespace App\Irc;
 
 use App\Irc\Responders\Responder;
+use Jerodev\PhpIrcClient\IrcChannel;
 
 class Channel
 {
@@ -42,14 +43,14 @@ class Channel
      *
      *  @return null|string The message to send back to the channel, if any.
      */
-    public function handlePrivmsg(string $from, string $message): ?string
+    public function handlePrivmsg(string $from, IrcChannel $ircChannel, string $message): ?string
     {
         $response = null;
         foreach ($this->responders as $responder) {
             if ($response === null) {
-                $response = $responder->handlePrivmsg($from, $this->name, $message);
+                $response = $responder->handlePrivmsg($from, $ircChannel, $message);
             } else {
-                $responder->handlePrivmsg($from, $this->name, $message, false);
+                $responder->handlePrivmsg($from, $ircChannel, $message, false);
             }
         }
 

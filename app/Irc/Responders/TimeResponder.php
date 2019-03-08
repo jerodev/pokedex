@@ -5,13 +5,14 @@ namespace App\Irc\Responders;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
  *  A responder that returns the time when a user uses the command `!time {timezone?}`.
  */
 class TimeResponder extends Responder
 {
-    public function handlePrivmsg(string $from, string $to, string $message, bool $respond = true): ?string
+    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?string
     {
         if ($respond === false || ($message !== '!time' && strstr($message, ' ', true) !== '!time')) {
             return null;

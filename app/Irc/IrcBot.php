@@ -2,6 +2,7 @@
 
 namespace App\Irc;
 
+use Jerodev\PhpIrcClient\IrcChannel;
 use Jerodev\PhpIrcClient\IrcClient;
 use Jerodev\PhpIrcClient\Options\ClientOptions;
 use App\Irc\Responders\Responder;
@@ -33,7 +34,7 @@ class IrcBot
 
         $this->client = new IrcClient($server, $options);
         $this->client->on('message', function () {
-            $this->privmsg(...func_get_args());
+            $this->handleMessage(...func_get_args());
         });
     }
 
@@ -70,19 +71,19 @@ class IrcBot
      *  Handle a new private or channel message.
      *
      *  @param string $from The nickname of the user who sent the message.
-     *  @param string $to The destination of the message. If this is a channel, the string will start with `#`.
+     *  @param IrcChannel $channel To channel to which the message was send
      *  @param string $message The message itself.
      */
-    private function privmsg(string $from, string $to, string $message): void
+    private function handleMessage(string $from, IrcChannel $ircChannel, string $message): void
     {
-        $channel = $this->channels[$to] ?? null;
+        $channel = $this->channels[$ircChannel->getName()] ?? null;
         if ($channel === null) {
             return;
         }
 
-        $response = $channel->handlePrivmsg($from, $message);
+        $response = $channel->handlePrivmsg($from, $ircChannel, $message);
         if ($response !== null) {
-            $this->client->say($to, $response);
+            $this->client->say($ircChannel->getName(), $response);
         }
     }
 }

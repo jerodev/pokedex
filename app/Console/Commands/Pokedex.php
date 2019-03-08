@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Irc\IrcBot;
+use App\Irc\Responders\FactResponder;
 use App\Irc\Responders\Logger;
 use App\Irc\Responders\TimeResponder;
 use App\Irc\Responders\QuestionResponderEN;
@@ -46,6 +47,7 @@ class Pokedex extends Command
         $bot->addResponder('#pokedextest', new TimeResponder());
         $bot->addResponder('#pokedextest', new QuestionResponderEN());
         $bot->addResponder('#pokedextest', new QuestionResponderNL());
+        $bot->addResponder('#pokedextest', new FactResponder());
         $bot->addResponder('#pokedextest', new Logger());
         $bot->connect();
     }
