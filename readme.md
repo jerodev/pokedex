@@ -1,10 +1,12 @@
 # Pokedex IRC bot
+[![Build Status](https://travis-ci.com/jerodev/pokedex.svg?branch=master)](https://travis-ci.com/jerodev/pokedex) [![StyleCI](https://github.styleci.io/repos/174622519/shield?branch=master)](https://github.styleci.io/repos/174622519)
+
 Pokedex is a simple modular IRC bot using my [PHP IRC Client](https://github.com/jerodev/php-irc-client).
 
 The project is built on top of a heavily stripped down version of [the Lumen framework](https://lumen.laravel.com/).
 
 ## Installation
-To use the bot: simply clone the repository, update configuration and run the `pokedex` command.
+To use the bot: simply [clone the repository](#clone-the-repository), [update configuration](#configure) and [run the `pokedex` command](#start-the-bot).
 
 ### Clone the repository
 

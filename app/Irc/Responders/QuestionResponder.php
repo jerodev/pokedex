@@ -2,7 +2,7 @@
 
 namespace App\Irc\Responders;
 
-use Illuminate\Support\Facades\Cache;
+use Cache;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
