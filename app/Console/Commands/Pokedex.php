@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Irc\IrcBot;
 use App\Irc\Responders\FactResponder;
+use App\Irc\Responders\GiphyResponder;
 use App\Irc\Responders\Logger;
 use App\Irc\Responders\TimeResponder;
 use App\Irc\Responders\QuestionResponderEN;
@@ -48,6 +49,7 @@ class Pokedex extends Command
         $channels = explode(',', env('IRC_CHANNELS', '#pokedextest'));
 
         $bot = new IrcBot($server, $botName, $channels);
+        $bot->addResponder($channels, new GiphyResponder());
         $bot->addResponder($channels, new TimeResponder());
         $bot->addResponder($channels, new QuestionResponderEN());
         $bot->addResponder($channels, new QuestionResponderNL());
