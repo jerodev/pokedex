@@ -10,31 +10,37 @@ To use the bot: simply [clone the repository](#clone-the-repository), [update co
 
 ### Clone the repository
 
-    # Clone Repository
-    git clone git@github.com:jerodev/pokedex.git
+``` bash
+# Clone Repository
+git clone git@github.com:jerodev/pokedex.git
 
-    # Install composer packages
-    composer install
+# Install composer packages
+composer install
+```
 
 ### Configure
 Configuration can be done using an `.env` file in the root of the project. It should contain these configurations:
 
-    # Irc bot configuration
-    IRC_BOTNAME=BotName
-    IRC_CHANNELS="#channel1,#channel2" # The quotes are required!
+``` yaml
+# Irc bot configuration
+IRC_BOTNAME=BotName
+IRC_CHANNELS="#channel1,#channel2" # The quotes are required!
 
-    # Used Fact & Logger responders
-    DB_CONNECTION=mysql
-    DB_HOST=localhost
-    DB_PORT=3306
-    DB_DATABASE=database
-    DB_USERNAME=username
-    DB_PASSWORD=password
+# Used Fact & Logger responders
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=database
+DB_USERNAME=username
+DB_PASSWORD=password
 
-    # Used for the Giphy responder
-    GIPHY_API=api-key
+# Used for the Giphy responder
+GIPHY_API=api-key
+```
 
 ### Start the bot.
 In the root of the application, run this command:
 
-    php artisan pokedex
+``` bash
+php artisan pokedex
+```
