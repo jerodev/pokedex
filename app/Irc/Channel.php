@@ -59,7 +59,7 @@ class Channel
             }
             catch (Exception | ErrorException $e)
             {
-                var_dump('ERROR: ', $e);
+                var_dump('ERROR: ' . $e->getMessage());
             }
         }
 
