@@ -9,4 +9,4 @@ To use the bot, simply clone this repository and run the following command:
     php artisan pokedex
 
 ## Customization
-The irc server, channels and responders can be customized in  [`app/Console/Commands/Pokedex.php`](app/Console/Commands/Pokedex.php).
+The irc server, channels and responders can be customized in  [`app/Console/Commands/Pokedex.php`](app/Console/Commands/Pokedex.php#L46).

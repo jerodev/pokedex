@@ -8,7 +8,8 @@ use Exception;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
- *  A responder that returns the time when a user uses the command `!time {timezone?}`.
+ *  `!time {timezone?}`
+ *  A responder that returns the time when a user uses the command.
  */
 class TimeResponder extends Responder
 {

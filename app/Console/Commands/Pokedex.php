@@ -43,12 +43,16 @@ class Pokedex extends Command
      */
     public function handle()
     {
-        $bot = new IrcBot('euroserv.fr.quakenet.org:6667', 'Pokedex', ['#pokedextest']);
-        $bot->addResponder('#pokedextest', new TimeResponder());
-        $bot->addResponder('#pokedextest', new QuestionResponderEN());
-        $bot->addResponder('#pokedextest', new QuestionResponderNL());
-        $bot->addResponder('#pokedextest', new FactResponder());
-        $bot->addResponder('#pokedextest', new Logger());
+        $server = env('IRC_SERVER', 'euroserv.fr.quakenet.org:6667');
+        $botName = env('IRC_BOTNAME', 'PokedexTest');
+        $channels = explode(',', env('IRC_CHANNELS', '#pokedextest'));
+
+        $bot = new IrcBot($server, $botName, $channels);
+        $bot->addResponder($channels, new TimeResponder());
+        $bot->addResponder($channels, new QuestionResponderEN());
+        $bot->addResponder($channels, new QuestionResponderNL());
+        $bot->addResponder($channels, new FactResponder());
+        $bot->addResponder($channels, new Logger());
         $bot->connect();
     }
 }
