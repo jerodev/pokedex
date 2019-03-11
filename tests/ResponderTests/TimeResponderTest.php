@@ -2,8 +2,8 @@
 
 namespace Tests\ResponderTests;
 
-use Jerodev\PhpIrcClient\IrcChannel;
 use App\Irc\Responders\TimeResponder;
+use Jerodev\PhpIrcClient\IrcChannel;
 use Tests\TestCase;
 
 class TimeResponderTest extends TestCase

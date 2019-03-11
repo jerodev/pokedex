@@ -2,9 +2,9 @@
 
 namespace Tests\ResponderTests;
 
-use Jerodev\PhpIrcClient\IrcChannel;
 use App\Irc\Responders\QuestionResponderEN;
 use App\Irc\Responders\QuestionResponderNL;
+use Jerodev\PhpIrcClient\IrcChannel;
 use Tests\TestCase;
 
 class QuestionResponderTest extends TestCase
@@ -52,12 +52,12 @@ class QuestionResponderTest extends TestCase
 
         $responseEN1 = $responderEN->handlePrivmsg('', new IrcChannel('#channel'), '!can this be tested?');
         $responseNL1 = $responderNL->handlePrivmsg('', new IrcChannel('#channel'), '!kan dit getest worden?');
-        
+
         usleep(100);
-        
+
         $responseEN2 = $responderEN->handlePrivmsg('', new IrcChannel('#channel'), '!can this be tested?');
         $responseNL2 = $responderNL->handlePrivmsg('', new IrcChannel('#channel'), '!kan dit getest worden?');
-        
+
         $this->assertEquals($responseEN1, $responseEN2);
         $this->assertEquals($responseNL1, $responseNL2);
     }
