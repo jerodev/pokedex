@@ -6,9 +6,9 @@ use App\Irc\IrcBot;
 use App\Irc\Responders\FactResponder;
 use App\Irc\Responders\GiphyResponder;
 use App\Irc\Responders\Logger;
-use App\Irc\Responders\TimeResponder;
 use App\Irc\Responders\QuestionResponderEN;
 use App\Irc\Responders\QuestionResponderNL;
+use App\Irc\Responders\TimeResponder;
 use Illuminate\Console\Command;
 
 class Pokedex extends Command

@@ -38,7 +38,7 @@ class Channel
     }
 
     /**
-     *  Handle an incoming message to this channel
+     *  Handle an incoming message to this channel.
      *
      *  @param string $from The nickname of the user who sent the message.
      *  @param string $message The message sent by this user.
@@ -49,17 +49,14 @@ class Channel
     {
         $response = null;
         foreach ($this->responders as $responder) {
-            try
-            {
+            try {
                 if ($response === null) {
                     $response = $responder->handlePrivmsg($from, $ircChannel, $message);
                 } else {
                     $responder->handlePrivmsg($from, $ircChannel, $message, false);
                 }
-            }
-            catch (Exception | ErrorException $e)
-            {
-                var_dump('ERROR: ' . $e->getMessage());
+            } catch (Exception | ErrorException $e) {
+                var_dump('ERROR: '.$e->getMessage());
             }
         }
 

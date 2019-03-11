@@ -6,7 +6,7 @@ use App\Repositories\MessageRepository;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
- *  This just stores all messages to the database
+ *  This just stores all messages to the database.
  */
 class Logger extends Responder
 {

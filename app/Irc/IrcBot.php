@@ -2,10 +2,10 @@
 
 namespace App\Irc;
 
+use App\Irc\Responders\Responder;
 use Jerodev\PhpIrcClient\IrcChannel;
 use Jerodev\PhpIrcClient\IrcClient;
 use Jerodev\PhpIrcClient\Options\ClientOptions;
-use App\Irc\Responders\Responder;
 
 class IrcBot
 {
@@ -16,7 +16,7 @@ class IrcBot
     private $client;
 
     /**
-     *  Create a new bot instance
+     *  Create a new bot instance.
      *
      *  @param string $server The server address and port of the irc server
      *  @param string $username The username for the bot
@@ -60,7 +60,7 @@ class IrcBot
     }
 
     /**
-     *  Open the irc connection
+     *  Open the irc connection.
      */
     public function connect(): void
     {

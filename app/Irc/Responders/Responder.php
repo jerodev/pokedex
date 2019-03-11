@@ -24,7 +24,7 @@ abstract class Responder
      *
      *  @return null|string The string that should be responded or `null` on no response.
      */
-    abstract function handlePrivmsg(string $from, IrcChannel $channel, string $message, bool $respond = true): ?string;
+    abstract public function handlePrivmsg(string $from, IrcChannel $channel, string $message, bool $respond = true): ?string;
 
     /**
      *  Throttle a certain function.
@@ -45,6 +45,7 @@ abstract class Responder
 
             if (count($calls) >= $limit) {
                 $minutes = round($time / 60);
+
                 return "This command can only be executed $limit times every $minutes minutes.";
             }
 
@@ -52,6 +53,7 @@ abstract class Responder
         }
 
         $this->throttleCache[$slug][] = time();
+
         return $function();
     }
 }
