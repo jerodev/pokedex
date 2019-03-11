@@ -3,6 +3,8 @@
 namespace App\Irc;
 
 use App\Irc\Responders\Responder;
+use ErrorException;
+use Exception;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 class Channel
@@ -47,10 +49,17 @@ class Channel
     {
         $response = null;
         foreach ($this->responders as $responder) {
-            if ($response === null) {
-                $response = $responder->handlePrivmsg($from, $ircChannel, $message);
-            } else {
-                $responder->handlePrivmsg($from, $ircChannel, $message, false);
+            try
+            {
+                if ($response === null) {
+                    $response = $responder->handlePrivmsg($from, $ircChannel, $message);
+                } else {
+                    $responder->handlePrivmsg($from, $ircChannel, $message, false);
+                }
+            }
+            catch (Exception | ErrorException $e)
+            {
+                var_dump('ERROR: ', $e);
             }
         }
 
