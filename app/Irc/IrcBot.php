@@ -83,7 +83,7 @@ class IrcBot
 
         $response = $channel->handlePrivmsg($from, $ircChannel, $message);
         if ($response !== null) {
-            $this->client->say($ircChannel->getName(), $response);
+            $this->client->say($response->getTarget() ?? $ircChannel->getName(), $response->getMessage());
         }
     }
 }

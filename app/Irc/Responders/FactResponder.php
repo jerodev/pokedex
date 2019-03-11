@@ -2,6 +2,7 @@
 
 namespace App\Irc\Responders;
 
+use App\Irc\Response;
 use App\Repositories\FactRepository;
 use Jerodev\PhpIrcClient\IrcChannel;
 
@@ -10,7 +11,7 @@ use Jerodev\PhpIrcClient\IrcChannel;
  */
 class FactResponder extends Responder
 {
-    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?string
+    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?Response
     {
         if ($respond === false) {
             return null;
@@ -40,17 +41,17 @@ class FactResponder extends Responder
         return null;
     }
 
-    private function factStats(IrcChannel $channel): ?string
+    private function factStats(IrcChannel $channel): ?Response
     {
         $stats = FactRepository::getStats($channel->getName());
         if (!$stats) {
             return null;
         }
 
-        return "I know $stats->fact_count facts. The last fact was `!$stats->command` created by $stats->nickname on $stats->created_at.";
+        return new Response("I know $stats->fact_count facts. The last fact was `!$stats->command` created by $stats->nickname on $stats->created_at.");
     }
 
-    private function learnFact(string $from, IrcChannel $to, string $message): ?string
+    private function learnFact(string $from, IrcChannel $to, string $message): ?Response
     {
         $message = substr($message, strlen('Pokedex: !'));
         $command = strstr($message, ' ', true);
@@ -61,18 +62,18 @@ class FactResponder extends Responder
         return null;
     }
 
-    private function respondToFact(string $from, IrcChannel $to, string $message): ?string
+    private function respondToFact(string $from, IrcChannel $to, string $message): ?Response
     {
         $command = substr((strpos($message, ' ') !== false ? strstr($message, ' ', true) : $message), 1);
 
         if ($response = FactRepository::getResponseString($command, $to->getName(), true)) {
-            return $this->parseResponse($response, $from, $to, $message);
+            return new Response($this->parseResponse($response, $from, $to, $message));
         }
 
         return null;
     }
 
-    private function singleFactStats(IrcChannel $to, string $message): ?string
+    private function singleFactStats(IrcChannel $to, string $message): ?Response
     {
         $command = trim(strstr($message, ' '));
         $stats = FactRepository::getSingleStats($command, $to->getName());
@@ -80,7 +81,9 @@ class FactResponder extends Responder
             return null;
         }
 
-        return "`!$command` was created on $stats->created_at, has $stats->response_count response".($stats->response_count > 1 ? 's' : '')." and has been used $stats->uses times.";
+        return new Response(
+            "`!$command` was created on $stats->created_at, has $stats->response_count response".($stats->response_count > 1 ? 's' : '')." and has been used $stats->uses times."
+        );
     }
 
     private function parseResponse(string $response, string $user, IrcChannel $channel, string $message): string

@@ -2,6 +2,7 @@
 
 namespace App\Irc\Responders;
 
+use App\Irc\Response;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -13,7 +14,7 @@ use Jerodev\PhpIrcClient\IrcChannel;
  */
 class TimeResponder extends Responder
 {
-    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?string
+    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?Response
     {
         if ($respond === false || ($message !== '!time' && strstr($message, ' ', true) !== '!time')) {
             return null;
@@ -26,10 +27,10 @@ class TimeResponder extends Responder
             try {
                 $date = new DateTime('now', new DateTimeZone($zone));
             } catch (Exception $e) {
-                return "Timezone `$zone` does not exist! Choose a timezone from this list: http://php.net/manual/en/timezones.php.";
+                return new Response("Timezone `$zone` does not exist! Choose a timezone from this list: http://php.net/manual/en/timezones.php.");
             }
         }
 
-        return $date->format('Y-m-d H:i:s');
+        return new Response($date->format('Y-m-d H:i:s'));
     }
 }

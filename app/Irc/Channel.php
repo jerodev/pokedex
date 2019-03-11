@@ -43,9 +43,9 @@ class Channel
      *  @param string $from The nickname of the user who sent the message.
      *  @param string $message The message sent by this user.
      *
-     *  @return null|string The message to send back to the channel, if any.
+     *  @return null|Response The message to send back to the irc server, if any.
      */
-    public function handlePrivmsg(string $from, IrcChannel $ircChannel, string $message): ?string
+    public function handlePrivmsg(string $from, IrcChannel $ircChannel, string $message): ?Response
     {
         $response = null;
         foreach ($this->responders as $responder) {

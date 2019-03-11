@@ -2,6 +2,7 @@
 
 namespace App\Irc\Responders;
 
+use App\Irc\Response;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 abstract class Responder
@@ -22,9 +23,9 @@ abstract class Responder
      *  @param string $message The message itself.
      *  @param bool $respond Will the response string be sent back to the irc server?
      *
-     *  @return null|string The string that should be responded or `null` on no response.
+     *  @return null|Response A response object to be send back to the irc server or `null` on no response.
      */
-    abstract public function handlePrivmsg(string $from, IrcChannel $channel, string $message, bool $respond = true): ?string;
+    abstract public function handlePrivmsg(string $from, IrcChannel $channel, string $message, bool $respond = true): ?Response;
 
     /**
      *  Throttle a certain function.
@@ -34,9 +35,9 @@ abstract class Responder
      *  @param int $limit The times a function can be called in the defined time.
      *  @param callable $function The function to call when it is not throttled.
      *
-     *  @return null|string The null|string response.
+     *  @return null|Response The response to send back to the server.
      */
-    protected function throttle(string $slug, int $time, int $limit, callable $function): ?string
+    protected function throttle(string $slug, int $time, int $limit, callable $function, ?string $nickname = null): ?Response
     {
         if ($this->throttleCache !== null && array_key_exists($slug, $this->throttleCache)) {
             $calls = array_filter($this->throttleCache[$slug], function ($call) use ($time) {
@@ -46,7 +47,11 @@ abstract class Responder
             if (count($calls) >= $limit) {
                 $minutes = round($time / 60);
 
-                return "This command can only be executed $limit times every $minutes minutes.";
+                if ($nickname !== null) {
+                    return new Response("This command can only be executed $limit times every $minutes minutes.", $nickname);
+                } else {
+                    return null;
+                }
             }
 
             $this->throttleCache[$slug] = $calls;

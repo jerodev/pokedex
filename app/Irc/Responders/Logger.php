@@ -2,6 +2,7 @@
 
 namespace App\Irc\Responders;
 
+use App\Irc\Response;
 use App\Repositories\MessageRepository;
 use Jerodev\PhpIrcClient\IrcChannel;
 
@@ -10,7 +11,7 @@ use Jerodev\PhpIrcClient\IrcChannel;
  */
 class Logger extends Responder
 {
-    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?string
+    public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?Response
     {
         MessageRepository::logMessage($to->getName(), $from, $message);
 
