@@ -16,7 +16,7 @@ class QuestionResponderEN extends QuestionResponder
 
             'No',
             'No!',
-            'Of course not'
+            'Of course not',
         ];
 
         $this->prefixes = [

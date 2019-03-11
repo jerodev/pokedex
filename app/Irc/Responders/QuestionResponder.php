@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
- *  Answers simple yes/no questions
+ *  Answers simple yes/no questions.
  */
 abstract class QuestionResponder extends Responder
 {

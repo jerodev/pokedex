@@ -25,8 +25,7 @@ class TimeResponder extends Responder
         if (!empty($zone)) {
             try {
                 $date = new DateTime('now', new DateTimeZone($zone));
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 return "Timezone `$zone` does not exist! Choose a timezone from this list: http://php.net/manual/en/timezones.php.";
             }
         }

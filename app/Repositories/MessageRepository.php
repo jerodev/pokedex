@@ -13,9 +13,9 @@ class MessageRepository extends Repository
 
         parent::query(self::table)->insert([
             'channel_id' => $channelid,
-            'user_id' => $userid,
-            'nickname' => $nickname,
-            'message' => $message,
+            'user_id'    => $userid,
+            'nickname'   => $nickname,
+            'message'    => $message,
         ]);
     }
 }

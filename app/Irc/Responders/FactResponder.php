@@ -6,7 +6,7 @@ use App\Repositories\FactRepository;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
- *  A responder that can learn and tell facts
+ *  A responder that can learn and tell facts.
  */
 class FactResponder extends Responder
 {
@@ -30,7 +30,6 @@ class FactResponder extends Responder
 
             // Find a fact
             return $this->respondToFact($from, $to, $message);
-
         }
 
         // Learn a fact
@@ -81,7 +80,7 @@ class FactResponder extends Responder
             return null;
         }
 
-        return "`!$command` was created on $stats->created_at, has $stats->response_count response" . ($stats->response_count > 1 ? 's' : '') . " and has been used $stats->uses times.";
+        return "`!$command` was created on $stats->created_at, has $stats->response_count response".($stats->response_count > 1 ? 's' : '')." and has been used $stats->uses times.";
     }
 
     private function parseResponse(string $response, string $user, IrcChannel $channel, string $message): string

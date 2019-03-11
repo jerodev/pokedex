@@ -16,7 +16,7 @@ class QuestionResponderNL extends QuestionResponder
 
             'Nee',
             'Nee!',
-            'Natuurlijk niet'
+            'Natuurlijk niet',
         ];
 
         $this->prefixes = [

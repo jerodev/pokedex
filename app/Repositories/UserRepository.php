@@ -12,7 +12,7 @@ class UserRepository extends Repository
             ->whereNickname($nickname)
             ->orWhereExists(function ($query) use ($nickname) {
                 $query->from('aliases')
-                    ->whereColumn(self::table . '.id', 'aliases.user_id')
+                    ->whereColumn(self::table.'.id', 'aliases.user_id')
                     ->whereNickname($nickname)
                     ->select(parent::raw(1));
             })

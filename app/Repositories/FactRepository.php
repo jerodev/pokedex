@@ -13,7 +13,7 @@ class FactRepository extends Repository
         $fact = parent::query(self::table)
             ->where([
                 'channel_id' => $channelid,
-                'command' => $command
+                'command'    => $command,
             ])
             ->inRandomOrder()
             ->select('id', 'response')
@@ -21,6 +21,7 @@ class FactRepository extends Repository
 
         if ($fact) {
             parent::query(self::table)->where('id', $fact->id)->increment('uses');
+
             return $fact->response;
         }
 
@@ -34,7 +35,7 @@ class FactRepository extends Repository
         return parent::query(self::table)
             ->where([
                 'channel_id' => $channelid,
-                'command' => $command
+                'command'    => $command,
             ])
             ->groupBy('command')
             ->select(
@@ -50,7 +51,7 @@ class FactRepository extends Repository
         $channelid = ChannelRepository::getChannelId($channel);
 
         $fact = parent::query(self::table)
-            ->join('users', 'users.id', '=', self::table . '.user_id')
+            ->join('users', 'users.id', '=', self::table.'.user_id')
             ->where('channel_id', $channelid)
             ->select(
                 'created_at',
@@ -72,9 +73,9 @@ class FactRepository extends Repository
 
         parent::query(self::table)->insert([
             'channel_id' => $channelid,
-            'user_id' => $userid,
-            'command' => $command,
-            'response' => $response
+            'user_id'    => $userid,
+            'command'    => $command,
+            'response'   => $response,
         ]);
     }
 }

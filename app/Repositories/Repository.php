@@ -10,11 +10,9 @@ abstract class Repository
     {
         return DB::table($table);
     }
-    
+
     protected static function raw($value)
     {
         return DB::raw($value);
     }
-    
-    
 }
