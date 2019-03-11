@@ -20,6 +20,7 @@ class CreateFactsTable extends Migration
             $table->string('command');
             $table->string('response');
             $table->integer('uses')->default(0);
+            $table->timestamp('created_at')->useCurrent();
 
             $table->foreign('channel_id')->references('id')->on('channels');
             $table->foreign('user_id')->references('id')->on('users');

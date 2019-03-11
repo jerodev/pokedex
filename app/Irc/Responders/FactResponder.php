@@ -16,9 +16,21 @@ class FactResponder extends Responder
             return null;
         }
 
-        // Find a fact
         if ($message[0] === '!') {
+
+            // Fact stats
+            if (strstr($message, ' ', true) === '!fact') {
+                return $this->singleFactStats($to, $message);
+            }
+
+            // Fact stats
+            if (substr($message, 0, 6) === '!facts') {
+                return $this->factStats($to, $message);
+            }
+
+            // Find a fact
             return $this->respondToFact($from, $to, $message);
+
         }
 
         // Learn a fact
@@ -27,6 +39,16 @@ class FactResponder extends Responder
         }
 
         return null;
+    }
+
+    private function factStats(IrcChannel $channel): ?string
+    {
+        $stats = FactRepository::getStats($channel->getName());
+        if (!$stats) {
+            return null;
+        }
+
+        return "I know $stats->fact_count facts. The last fact was `!$stats->command` created by $stats->nickname on $stats->created_at.";
     }
 
     private function learnFact(string $from, IrcChannel $to, string $message): ?string
@@ -49,6 +71,17 @@ class FactResponder extends Responder
         }
 
         return null;
+    }
+
+    private function singleFactStats(IrcChannel $to, string $message): ?string
+    {
+        $command = trim(strstr($message, ' '));
+        $stats = FactRepository::getSingleStats($command, $to->getName());
+        if (!$stats) {
+            return null;
+        }
+
+        return "`!$command` was created on $stats->created_at, has $stats->response_count response" . ($stats->response_count > 1 ? 's' : '') . " and has been used $stats->uses times.";
     }
 
     private function parseResponse(string $response, string $user, IrcChannel $channel, string $message): string
