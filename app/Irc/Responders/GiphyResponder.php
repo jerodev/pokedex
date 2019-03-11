@@ -21,7 +21,7 @@ class GiphyResponder extends Responder
 
         $payload = trim(strstr($message, ' '));
 
-        return $this->throttle('giphy', 3900, 1, function () use ($apikey, $payload) {
+        return $this->throttle('giphy', 3900, 42, function () use ($apikey, $payload) {
             $response = json_decode(file_get_contents("https://api.giphy.com/v1/gifs/random?api_key=$apikey&tag=$payload&rating=R"));
 
             return new Response($response->data->images->original->url);
