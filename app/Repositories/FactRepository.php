@@ -2,19 +2,16 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Query\Builder as QueryBuilder;
+
 class FactRepository extends Repository
 {
+    /** @var string */
     const table = 'facts';
 
     public static function getResponseString(string $command, string $channel, bool $updateUseCount = false): ?string
     {
-        $channelid = ChannelRepository::getChannelId($channel);
-
-        $fact = parent::query(self::table)
-            ->where([
-                'channel_id' => $channelid,
-                'command'    => $command,
-            ])
+        $fact = self::getCommandQuery($command, $channel)
             ->inRandomOrder()
             ->select('id', 'response')
             ->first();
@@ -30,13 +27,7 @@ class FactRepository extends Repository
 
     public static function getSingleStats(string $command, string $channel)
     {
-        $channelid = ChannelRepository::getChannelId($channel);
-
-        return parent::query(self::table)
-            ->where([
-                'channel_id' => $channelid,
-                'command'    => $command,
-            ])
+        return self::getCommandQuery($command, $channel)
             ->groupBy('command')
             ->select(
                 self::raw('MIN(created_at) as created_at'),
@@ -48,11 +39,14 @@ class FactRepository extends Repository
 
     public static function getStats(string $channel)
     {
-        $channelid = ChannelRepository::getChannelId($channel);
-
         $fact = parent::query(self::table)
             ->join('users', 'users.id', '=', self::table.'.user_id')
-            ->where('channel_id', $channelid)
+            ->whereExists(function ($query) use ($channel) {
+                $query->from('channels')
+                    ->whereColumn('channels.id', '=', 'facts.channel_id')
+                    ->where('channels.name', $channel)
+                    ->select(self::raw(1));
+            })
             ->select(
                 'created_at',
                 'users.nickname',
@@ -61,7 +55,12 @@ class FactRepository extends Repository
             ->orderByDesc('created_at')
             ->first();
 
-        $fact->fact_count = parent::query(self::table)->where('channel_id', $channelid)->count();
+        $fact->fact_count = parent::query(self::table)->whereExists(function ($query) use ($channel) {
+                $query->from('channels')
+                    ->whereColumn('channels.id', '=', 'facts.channel_id')
+                    ->where('channels.name', $channel)
+                    ->select(self::raw(1));
+            })->count();
 
         return $fact;
     }
@@ -77,5 +76,25 @@ class FactRepository extends Repository
             'command'    => $command,
             'response'   => $response,
         ]);
+    }
+
+    /**
+     *  Create a query builder that filters on command and channel.
+     *
+     *  @param string $command
+     *  @param string $channel
+     *
+     *  @return QueryBuilder
+     */
+    private static function getCommandQuery(string $command, string $channel): QueryBuilder
+    {
+        return parent::query(self::table)
+            ->where('command', $command)
+            ->whereExists(function ($query) use ($channel) {
+                $query->from('channels')
+                    ->whereColumn('channels.id', '=', 'facts.channel_id')
+                    ->where('channels.name', $channel)
+                    ->select(self::raw(1));
+            });
     }
 }

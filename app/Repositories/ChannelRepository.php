@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 class ChannelRepository extends Repository
 {
+    /** @var string */
     const table = 'channels';
 
     public static function getChannelId(string $channel): int

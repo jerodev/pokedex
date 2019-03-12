@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 class UserRepository extends Repository
 {
+    /** @var string */
     const table = 'users';
 
     public static function getUserId(string $nickname): int

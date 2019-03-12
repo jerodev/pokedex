@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 class MessageRepository extends Repository
 {
+    /** @var string */
     const table = 'messages';
 
     public static function logMessage(string $channel, string $nickname, string $message): void
