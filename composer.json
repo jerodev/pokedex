@@ -8,6 +8,7 @@
         "php": ">=7.1.3",
         "jerodev/php-irc-client": "dev-master",
         "laravel/lumen-framework": "5.8.*",
+        "spatie/once": "^2.0",
         "vlucas/phpdotenv": "^3.3"
     },
     "require-dev": {
