@@ -2,12 +2,42 @@
 
 namespace App\Repositories;
 
+use DateTime;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use stdClass;
 
 class FactRepository extends Repository
 {
     /** @var string */
     const table = 'facts';
+
+    public static function getLastUserFact(string $user, string $channel, ?int $minutesBack): ?stdClass
+    {
+        $query = self::factQuery()
+            ->whereExists(function ($query) use ($channel) {
+                $query->from('channels')
+                    ->whereColumn('channels.id', '=', 'facts.channel_id')
+                    ->where('channels.name', $channel)
+                    ->select(self::raw(1));
+            })
+            ->whereExists(function ($query) use ($user) {
+                $query->from('users')
+                    ->leftJoin('aliases', 'aliases.user_id', '=', 'users.id')
+                    ->whereColumn('users.id', '=', 'facts.user_id')
+                    ->where(function ($query) use ($user) {
+                        $query
+                            ->orWhere('users.nickname', $user)
+                            ->orWhere('aliases.nickname', $user);
+                    })
+                    ->select(self::raw(1));
+            });
+
+        if ($minutesBack) {
+            $query = $query->where('created_at', '>', self::raw("(now() - interval $minutesBack minute)"));
+        }
+
+        return $query->latest()->first();
+    }
 
     public static function getResponseString(string $command, string $channel, bool $updateUseCount = false): ?string
     {
@@ -17,7 +47,7 @@ class FactRepository extends Repository
             ->first();
 
         if ($fact) {
-            parent::query(self::table)->where('id', $fact->id)->increment('uses');
+            self::factQuery()->where('id', $fact->id)->increment('uses');
 
             return $fact->response;
         }
@@ -39,7 +69,7 @@ class FactRepository extends Repository
 
     public static function getStats(string $channel)
     {
-        $fact = parent::query(self::table)
+        $fact = self::factQuery()
             ->join('users', 'users.id', '=', self::table.'.user_id')
             ->whereExists(function ($query) use ($channel) {
                 $query->from('channels')
@@ -78,6 +108,11 @@ class FactRepository extends Repository
         ]);
     }
 
+    public static function removeFact(int $id): void
+    {
+        self::factQuery()->where('id', $id)->update(['deleted_at' => new DateTime()]);
+    }
+
     /**
      *  Create a query builder that filters on command and channel.
      *
@@ -88,7 +123,7 @@ class FactRepository extends Repository
      */
     private static function getCommandQuery(string $command, string $channel): QueryBuilder
     {
-        return parent::query(self::table)
+        return self::factQuery()
             ->where('command', $command)
             ->whereExists(function ($query) use ($channel) {
                 $query->from('channels')
@@ -96,5 +131,10 @@ class FactRepository extends Repository
                     ->where('channels.name', $channel)
                     ->select(self::raw(1));
             });
+    }
+
+    private static function factQuery(): QueryBuilder
+    {
+        return parent::query(self::table)->whereNull('deleted_at');
     }
 }
