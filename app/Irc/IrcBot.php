@@ -30,6 +30,7 @@ class IrcBot
         }
 
         $options = new ClientOptions($username, $channels);
+        $options->autoRejoin = true;
         $options->floodProtectionDelay = 750;
 
         $this->client = new IrcClient($server, $options);

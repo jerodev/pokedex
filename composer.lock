@@ -1409,12 +1409,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jerodev/php-irc-client.git",
-                "reference": "e9910e2a56119b24001610a42edb170c7639cd8e"
+                "reference": "5548cd764363eddcd5b5a8fadfdce0d15683bbed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jerodev/php-irc-client/zipball/e9910e2a56119b24001610a42edb170c7639cd8e",
-                "reference": "e9910e2a56119b24001610a42edb170c7639cd8e",
+                "url": "https://api.github.com/repos/jerodev/php-irc-client/zipball/5548cd764363eddcd5b5a8fadfdce0d15683bbed",
+                "reference": "5548cd764363eddcd5b5a8fadfdce0d15683bbed",
                 "shasum": ""
             },
             "require": {
@@ -1443,7 +1443,7 @@
                 }
             ],
             "description": "php irc client based on react",
-            "time": "2019-03-08T22:46:39+00:00"
+            "time": "2019-03-12T11:11:28+00:00"
         },
         {
             "name": "laravel/lumen-framework",
@@ -1610,16 +1610,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.14.2",
+            "version": "2.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "a1f4f9abcde8241ce33bf5090896e9c16d0b4232"
+                "reference": "dd16fedc022180ea4292a03aabe95e9895677911"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/a1f4f9abcde8241ce33bf5090896e9c16d0b4232",
-                "reference": "a1f4f9abcde8241ce33bf5090896e9c16d0b4232",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/dd16fedc022180ea4292a03aabe95e9895677911",
+                "reference": "dd16fedc022180ea4292a03aabe95e9895677911",
                 "shasum": ""
             },
             "require": {
@@ -1666,7 +1666,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-02-28T09:07:12+00:00"
+            "time": "2019-03-12T09:31:40+00:00"
         },
         {
             "name": "nikic/fast-route",
