@@ -20,13 +20,18 @@ class FactResponder extends Responder
         if ($message[0] === '!') {
 
             // Fact stats
-            if (strstr($message, ' ', true) === '!fact') {
-                return $this->singleFactStats($to, $message);
+            if ($message === '!facts') {
+                return $this->factStats($to, $message);
+            }
+
+            // Undo last fact
+            if ($message === '!undo') {
+                return $this->undoFact($to, $from);
             }
 
             // Fact stats
-            if (substr($message, 0, 6) === '!facts') {
-                return $this->factStats($to, $message);
+            if (strstr($message, ' ', true) === '!fact') {
+                return $this->singleFactStats($to, $message);
             }
 
             // Find a fact
@@ -117,5 +122,16 @@ class FactResponder extends Responder
         }
 
         return $response;
+    }
+
+    private function undoFact(IrcChannel $channel, string $user): ?Response
+    {
+        $fact = FactRepository::getLastUserFact($user, $channel->getName(), 30);
+        if (!$fact) {
+            return new Response('You did not create a fact in the last 30 minutes on this channel!', $user);
+        }
+
+        FactRepository::removeFact($fact->id);
+        return new Response("The fact `!$fact->command` with response \"$fact->response\" has been removed.", $user);
     }
 }

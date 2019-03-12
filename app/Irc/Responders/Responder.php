@@ -37,7 +37,7 @@ abstract class Responder
      *
      *  @return null|Response The response to send back to the server.
      */
-    protected function throttle(string $slug, int $time, int $limit, callable $function, ?string $nickname = null): ?Response
+    protected function throttle(string $slug, int $time, int $limit, callable $function, ?string $nickname = null, ?string $throttleReason = null): ?Response
     {
         if ($this->throttleCache !== null && array_key_exists($slug, $this->throttleCache)) {
             $calls = array_filter($this->throttleCache[$slug], function ($call) use ($time) {
@@ -48,7 +48,7 @@ abstract class Responder
                 $minutes = round($time / 60);
 
                 if ($nickname !== null) {
-                    return new Response("This command can only be executed $limit times every $minutes minutes.", $nickname);
+                    return new Response($throttleReason ?? "This command can only be executed $limit times every $minutes minutes.", $nickname);
                 } else {
                     return null;
                 }
