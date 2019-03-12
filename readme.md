@@ -5,7 +5,7 @@ Pokedex is a simple modular IRC bot using my [PHP IRC Client](https://github.com
 
 The project is built on top of a heavily stripped down version of [the Lumen framework](https://lumen.laravel.com/).
 
-## Installation
+## Usage
 To use the bot: simply [clone the repository](#clone-the-repository), [update configuration](#configure) and [run the `pokedex` command](#start-the-bot).
 
 ### Clone the repository
