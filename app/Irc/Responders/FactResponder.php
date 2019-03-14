@@ -132,6 +132,7 @@ class FactResponder extends Responder
         }
 
         FactRepository::removeFact($fact->id);
+
         return new Response("The fact `!$fact->command` with response \"$fact->response\" has been removed.", $user);
     }
 }
