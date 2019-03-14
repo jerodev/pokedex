@@ -86,11 +86,11 @@ class FactRepository extends Repository
             ->first();
 
         $fact->fact_count = parent::query(self::table)->whereExists(function ($query) use ($channel) {
-                $query->from('channels')
+            $query->from('channels')
                     ->whereColumn('channels.id', '=', 'facts.channel_id')
                     ->where('channels.name', $channel)
                     ->select(self::raw(1));
-            })->count();
+        })->count();
 
         return $fact;
     }

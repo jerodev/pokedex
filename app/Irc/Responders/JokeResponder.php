@@ -25,9 +25,7 @@ class JokeResponder extends Responder
         }
 
         return $this->throttle("joke_$from@" . $to->getName(), $this->timeLimit * 60, $this->jokeLimit, function () {
-
-            $jokes = Cache::rememberForever('jokes', function() {
-
+            $jokes = Cache::rememberForever('jokes', function () {
                 $providers = [
                     'getGeekJokeApiJokes',
                     'getJokeDatasetJokes',
@@ -42,16 +40,14 @@ class JokeResponder extends Responder
                 }
 
                 return $jokes;
-
             });
 
             return new Response($jokes[array_rand($jokes)]);
-
         }, $from, "You can only request $this->jokeLimit jokes every $this->timeLimit minutes!");
     }
 
     /**
-     *  https://github.com/pyjokes/pyjokes
+     *  https://github.com/pyjokes/pyjokes.
      */
     private function getPyJokes(): array
     {
@@ -68,7 +64,7 @@ class JokeResponder extends Responder
     }
 
     /**
-     *  https://github.com/taivop/joke-dataset
+     *  https://github.com/taivop/joke-dataset.
      */
     private function getJokeDatasetJokes(): array
     {
