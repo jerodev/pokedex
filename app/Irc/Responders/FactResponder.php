@@ -12,6 +12,18 @@ use Jerodev\PhpIrcClient\IrcChannel;
  */
 class FactResponder extends Responder
 {
+    /** @var FactRepository */
+    private $factRepository;
+
+    /** @var MessageRepository */
+    private $messageRepository;
+
+    public function __construct(?FactRepository $factRepository = null, ?MessageRepository $messageRepository = null)
+    {
+        $this->factRepository = $factRepository ?? app(FactRepository::class);
+        $this->messageRepository = $messageRepository ?? app(MessageRepository::class);
+    }
+
     public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?Response
     {
         if ($respond === false) {
@@ -54,7 +66,7 @@ class FactResponder extends Responder
 
     private function factStats(IrcChannel $channel): ?Response
     {
-        $stats = FactRepository::getStats($channel->getName());
+        $stats = $this->factRepository->getStats($channel->getName());
         if (!$stats) {
             return null;
         }
@@ -68,14 +80,14 @@ class FactResponder extends Responder
         $command = strstr($message, ' ', true);
         $response = trim(substr($message, strlen($command)));
 
-        FactRepository::learnFact($from, $to->getName(), $command, $response);
+        $this->factRepository->learnFact($from, $to->getName(), $command, $response);
 
         return null;
     }
 
     private function quoteUser(string $from, IrcChannel $to, string $userToQuote): ?Response
     {
-        $message = MessageRepository::getLastUserMessage($to->getName(), $userToQuote);
+        $message = $this->messageRepository->getLastUserMessage($to->getName(), $userToQuote);
         if ($message === null) {
             return new Response("No quotable message found for $userToQuote in the last 5 minutes.");
         }
@@ -88,7 +100,7 @@ class FactResponder extends Responder
     {
         $command = substr((strpos($message, ' ') !== false ? strstr($message, ' ', true) : $message), 1);
 
-        if ($response = FactRepository::getResponseString($command, $to->getName(), true)) {
+        if ($response = $this->factRepository->getResponseString($command, $to->getName(), true)) {
             return new Response($this->parseResponse($response, $from, $to, $message));
         }
 
@@ -98,7 +110,7 @@ class FactResponder extends Responder
     private function singleFactStats(IrcChannel $to, string $message): ?Response
     {
         $command = trim(strstr($message, ' '));
-        $stats = FactRepository::getSingleStats($command, $to->getName());
+        $stats = $this->factRepository->getSingleStats($command, $to->getName());
         if (!$stats) {
             return null;
         }
@@ -143,12 +155,12 @@ class FactResponder extends Responder
 
     private function undoFact(IrcChannel $channel, string $user): ?Response
     {
-        $fact = FactRepository::getLastUserFact($user, $channel->getName(), 30);
+        $fact = $this->factRepository->getLastUserFact($user, $channel->getName(), 30);
         if (!$fact) {
             return new Response('You did not create a fact in the last 30 minutes on this channel!', $user);
         }
 
-        FactRepository::removeFact($fact->id);
+        $this->factRepository->removeFact($fact->id);
 
         return new Response("The fact `!$fact->command` with response \"$fact->response\" has been removed.", $user);
     }

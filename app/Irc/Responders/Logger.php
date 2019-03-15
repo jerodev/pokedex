@@ -11,9 +11,17 @@ use Jerodev\PhpIrcClient\IrcChannel;
  */
 class Logger extends Responder
 {
+    /** @var MessageRepository */
+    private $messageRepository;
+
+    public function __construct(?MessageRepository $messageRepository = null)
+    {
+        $this->messageRepository = $messageRepository ?? app(MessageRepository::class);
+    }
+
     public function handlePrivmsg(string $from, IrcChannel $to, string $message, bool $respond = true): ?Response
     {
-        MessageRepository::logMessage($to->getName(), $from, $message);
+        $this->messageRepository->logMessage($to->getName(), $from, $message);
 
         return null;
     }

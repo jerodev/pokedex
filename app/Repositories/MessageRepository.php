@@ -7,12 +7,24 @@ use stdClass;
 class MessageRepository extends Repository
 {
     /** @var string */
-    const table = 'messages';
+    private const table = 'messages';
 
-    public static function logMessage(string $channel, string $nickname, string $message): void
+    /** @var ChannelRepository */
+    private $channelRepository;
+
+    /** @var UserRepository */
+    private $userRepository;
+
+    public function __construct(ChannelRepository $channelRepository, UserRepository $userRepository)
     {
-        $channelid = ChannelRepository::getChannelId($channel);
-        $userid = UserRepository::getUserId($nickname);
+        $this->channelRepository = $channelRepository;
+        $this->userRepository = $userRepository;
+    }
+
+    public function logMessage(string $channel, string $nickname, string $message): void
+    {
+        $channelid = $this->channelRepository->getChannelId($channel);
+        $userid = $this->userRepository->getUserId($nickname);
 
         parent::query(self::table)->insert([
             'channel_id' => $channelid,
@@ -22,7 +34,7 @@ class MessageRepository extends Repository
         ]);
     }
 
-    public static function getLastUserMessage(string $channel, string $user): ?stdClass
+    public function getLastUserMessage(string $channel, string $user): ?stdClass
     {
         return parent::query(self::table)
             ->whereExists(function ($query) use ($channel) {

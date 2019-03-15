@@ -5,9 +5,9 @@ namespace App\Repositories;
 class UserRepository extends Repository
 {
     /** @var string */
-    const table = 'users';
+    private const table = 'users';
 
-    public static function getUserId(string $nickname): int
+    public function getUserId(string $nickname): int
     {
         $id = parent::query(self::table)
             ->whereNickname($nickname)
@@ -15,7 +15,7 @@ class UserRepository extends Repository
                 $query->from('aliases')
                     ->whereColumn(self::table.'.id', 'aliases.user_id')
                     ->whereNickname($nickname)
-                    ->select(parent::raw(1));
+                    ->select($this->raw(1));
             })
             ->pluck('id')
             ->first();

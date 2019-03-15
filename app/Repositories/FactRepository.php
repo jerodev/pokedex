@@ -9,16 +9,28 @@ use stdClass;
 class FactRepository extends Repository
 {
     /** @var string */
-    const table = 'facts';
+    private const table = 'facts';
 
-    public static function getLastUserFact(string $user, string $channel, ?int $minutesBack): ?stdClass
+    /** @var ChannelRepository */
+    private $channelRepository;
+
+    /** @var UserRepository */
+    private $userRepository;
+
+    public function __construct(ChannelRepository $channelRepository, UserRepository $userRepository)
     {
-        $query = self::factQuery()
+        $this->channelRepository = $channelRepository;
+        $this->userRepository = $userRepository;
+    }
+
+    public function getLastUserFact(string $user, string $channel, ?int $minutesBack): ?stdClass
+    {
+        $query = $this->factQuery()
             ->whereExists(function ($query) use ($channel) {
                 $query->from('channels')
                     ->whereColumn('channels.id', '=', 'facts.channel_id')
                     ->where('channels.name', $channel)
-                    ->select(self::raw(1));
+                    ->select($this->raw(1));
             })
             ->whereExists(function ($query) use ($user) {
                 $query->from('users')
@@ -29,25 +41,25 @@ class FactRepository extends Repository
                             ->orWhere('users.nickname', $user)
                             ->orWhere('aliases.nickname', $user);
                     })
-                    ->select(self::raw(1));
+                    ->select($this->raw(1));
             });
 
         if ($minutesBack) {
-            $query = $query->where('created_at', '>', self::raw("(now() - interval $minutesBack minute)"));
+            $query = $query->where('created_at', '>', $this->raw("(now() - interval $minutesBack minute)"));
         }
 
         return $query->latest()->first();
     }
 
-    public static function getResponseString(string $command, string $channel, bool $updateUseCount = false): ?string
+    public function getResponseString(string $command, string $channel, bool $updateUseCount = false): ?string
     {
-        $fact = self::getCommandQuery($command, $channel)
+        $fact = $this->getCommandQuery($command, $channel)
             ->inRandomOrder()
             ->select('id', 'response')
             ->first();
 
         if ($fact) {
-            self::factQuery()->where('id', $fact->id)->increment('uses');
+            $this->factQuery()->where('id', $fact->id)->increment('uses');
 
             return $fact->response;
         }
@@ -55,27 +67,27 @@ class FactRepository extends Repository
         return null;
     }
 
-    public static function getSingleStats(string $command, string $channel)
+    public function getSingleStats(string $command, string $channel)
     {
-        return self::getCommandQuery($command, $channel)
+        return $this->getCommandQuery($command, $channel)
             ->groupBy('command')
             ->select(
-                self::raw('MIN(created_at) as created_at'),
-                self::raw('SUM(uses) as uses'),
-                self::raw('COUNT(1) as response_count')
+                $this->raw('MIN(created_at) as created_at'),
+                $this->raw('SUM(uses) as uses'),
+                $this->raw('COUNT(1) as response_count')
             )
             ->first();
     }
 
-    public static function getStats(string $channel)
+    public function getStats(string $channel)
     {
-        $fact = self::factQuery()
+        $fact = $this->factQuery()
             ->join('users', 'users.id', '=', self::table.'.user_id')
             ->whereExists(function ($query) use ($channel) {
                 $query->from('channels')
                     ->whereColumn('channels.id', '=', 'facts.channel_id')
                     ->where('channels.name', $channel)
-                    ->select(self::raw(1));
+                    ->select($this->raw(1));
             })
             ->select(
                 'created_at',
@@ -87,18 +99,18 @@ class FactRepository extends Repository
 
         $fact->fact_count = parent::query(self::table)->whereExists(function ($query) use ($channel) {
             $query->from('channels')
-                    ->whereColumn('channels.id', '=', 'facts.channel_id')
-                    ->where('channels.name', $channel)
-                    ->select(self::raw(1));
+                ->whereColumn('channels.id', '=', 'facts.channel_id')
+                ->where('channels.name', $channel)
+                ->select($this->raw(1));
         })->count();
 
         return $fact;
     }
 
-    public static function learnFact(string $nickname, string $channel, string $command, string $response): void
+    public function learnFact(string $nickname, string $channel, string $command, string $response): void
     {
-        $channelid = ChannelRepository::getChannelId($channel);
-        $userid = UserRepository::getUserId($nickname);
+        $channelid = $this->channelRepository->getChannelId($channel);
+        $userid = $this->userRepository->getUserId($nickname);
 
         parent::query(self::table)->insert([
             'channel_id' => $channelid,
@@ -108,9 +120,9 @@ class FactRepository extends Repository
         ]);
     }
 
-    public static function removeFact(int $id): void
+    public function removeFact(int $id): void
     {
-        self::factQuery()->where('id', $id)->update(['deleted_at' => new DateTime()]);
+        $this->factQuery()->where('id', $id)->update(['deleted_at' => new DateTime()]);
     }
 
     /**
@@ -121,19 +133,19 @@ class FactRepository extends Repository
      *
      *  @return QueryBuilder
      */
-    private static function getCommandQuery(string $command, string $channel): QueryBuilder
+    private function getCommandQuery(string $command, string $channel): QueryBuilder
     {
-        return self::factQuery()
+        return $this->factQuery()
             ->where('command', $command)
             ->whereExists(function ($query) use ($channel) {
                 $query->from('channels')
                     ->whereColumn('channels.id', '=', 'facts.channel_id')
                     ->where('channels.name', $channel)
-                    ->select(self::raw(1));
+                    ->select($this->raw(1));
             });
     }
 
-    private static function factQuery(): QueryBuilder
+    private function factQuery(): QueryBuilder
     {
         return parent::query(self::table)->whereNull('deleted_at');
     }

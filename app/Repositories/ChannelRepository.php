@@ -5,9 +5,9 @@ namespace App\Repositories;
 class ChannelRepository extends Repository
 {
     /** @var string */
-    const table = 'channels';
+    private const table = 'channels';
 
-    public static function getChannelId(string $channel): int
+    public function getChannelId(string $channel): int
     {
         return once(function () use ($channel) {
             $id = parent::query(self::table)->whereName($channel)->pluck('id')->first();
