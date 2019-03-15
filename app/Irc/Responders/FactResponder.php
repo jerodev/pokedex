@@ -93,6 +93,7 @@ class FactResponder extends Responder
         }
 
         $this->learnFact($from, $to, "Pokedex: !$userToQuote <$userToQuote> $message->message");
+        
         return new Response("Saved quote \"$message->message\" to `!$userToQuote`.");
     }
 

@@ -18,7 +18,7 @@ class FactResponderTest extends TestCase
                 ['foo', '#foo', true],
                 ['smile', '#foo', true],
                 ['👍', '#foo', true],
-            ]
+            ],
         ]);
 
         $channel = new IrcChannel('#foo');
@@ -36,7 +36,7 @@ class FactResponderTest extends TestCase
                 ['foo', '#foo'],
                 ['!foo', '#foo'],
                 ['👍', '#foo'],
-            ]
+            ],
         ]);
 
         $channel = new IrcChannel('#foo');
@@ -54,7 +54,7 @@ class FactResponderTest extends TestCase
                 ['jerodev', '#foo', 'foo', 'bar'],
                 ['jerodev', '#foo', 'smile', '😄'],
                 ['jerodev', '#foo', '👍', '👎'],
-            ]
+            ],
         ]);
 
         $channel = new IrcChannel('#foo');
@@ -71,7 +71,8 @@ class FactResponderTest extends TestCase
         $responder = $this->mockFactResponder([
             'getStats' => [
                 ['#foo'],
-            ]
+            ],
+            'getResponseString' => null,
         ]);
 
         $channel = new IrcChannel('#foo');
@@ -85,7 +86,8 @@ class FactResponderTest extends TestCase
         $responder = $this->mockFactResponder([
             'getLastUserFact' => [
                 ['jerodev', '#foo', 30],
-            ]
+            ],
+            'getResponseString' => null,
         ]);
 
         $channel = new IrcChannel('#foo');
@@ -101,9 +103,11 @@ class FactResponderTest extends TestCase
             ->setMethods(array_keys($expected))
             ->getMock();
         foreach ($expected as $method => $values) {
-            $repository->expects($this->exactly(count($values)))
-                ->method($method)
-                ->withConsecutive(...$values);
+            if ($values) {
+                $repository->expects($this->exactly(count($values)))
+                    ->method($method)
+                    ->withConsecutive(...$values);
+            }
         }
 
         return new FactResponder($repository);
