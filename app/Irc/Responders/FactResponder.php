@@ -100,7 +100,7 @@ class FactResponder extends Responder
     {
         $command = substr((strpos($message, ' ') !== false ? strstr($message, ' ', true) : $message), 1);
 
-        if ($response = $this->factRepository->getResponseString($command, $to->getName(), true)) {
+        if (!empty($command) && $response = $this->factRepository->getResponseString($command, $to->getName(), true)) {
             return new Response($this->parseResponse($response, $from, $to, $message));
         }
 
@@ -110,14 +110,13 @@ class FactResponder extends Responder
     private function singleFactStats(IrcChannel $to, string $message): ?Response
     {
         $command = trim(strstr($message, ' '));
-        $stats = $this->factRepository->getSingleStats($command, $to->getName());
-        if (!$stats) {
-            return null;
+        if (strpos($command, ' ') === false && ($stats = $this->factRepository->getSingleStats($command, $to->getName()))) {
+            return new Response(
+                "`!$command` was created on $stats->created_at, has $stats->response_count response".($stats->response_count > 1 ? 's' : '')." and has been used $stats->uses times."
+            );
         }
 
-        return new Response(
-            "`!$command` was created on $stats->created_at, has $stats->response_count response".($stats->response_count > 1 ? 's' : '')." and has been used $stats->uses times."
-        );
+        return null;
     }
 
     private function parseResponse(string $response, string $user, IrcChannel $channel, string $message): string
