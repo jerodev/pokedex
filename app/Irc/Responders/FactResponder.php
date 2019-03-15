@@ -4,6 +4,7 @@ namespace App\Irc\Responders;
 
 use App\Irc\Response;
 use App\Repositories\FactRepository;
+use App\Repositories\MessageRepository;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
@@ -32,6 +33,11 @@ class FactResponder extends Responder
             // Fact stats
             if (strstr($message, ' ', true) === '!fact') {
                 return $this->singleFactStats($to, $message);
+            }
+
+            // Quote a user
+            if (strstr($message, ' ', true) === '!quote') {
+                return $this->quoteUser($from, $to, trim(strstr($message, ' ')));
             }
 
             // Find a fact
@@ -65,6 +71,17 @@ class FactResponder extends Responder
         FactRepository::learnFact($from, $to->getName(), $command, $response);
 
         return null;
+    }
+
+    private function quoteUser(string $from, IrcChannel $to, string $userToQuote): ?Response
+    {
+        $message = MessageRepository::getLastUserMessage($to->getName(), $userToQuote);
+        if ($message === null) {
+            return new Response("No quotable message found for $userToQuote in the last 5 minutes.");
+        }
+
+        $this->learnFact($from, $to, "Pokedex: !$userToQuote <$userToQuote> $message->message");
+        return new Response("Saved quote \"$message->message\" to `!$userToQuote`.");
     }
 
     private function respondToFact(string $from, IrcChannel $to, string $message): ?Response
