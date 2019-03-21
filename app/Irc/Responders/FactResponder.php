@@ -93,14 +93,13 @@ class FactResponder extends Responder
         }
 
         $this->learnFact($from, $to, "Pokedex: !$userToQuote <$userToQuote> $message->message");
-        
+
         return new Response("Saved quote \"$message->message\" to `!$userToQuote`.");
     }
 
     private function respondToFact(string $from, IrcChannel $to, string $message): ?Response
     {
         $command = substr((strpos($message, ' ') !== false ? strstr($message, ' ', true) : $message), 1);
-
         if (!empty($command) && $response = $this->factRepository->getResponseString($command, $to->getName(), true)) {
             return new Response($this->parseResponse($response, $from, $to, $message));
         }
@@ -123,7 +122,9 @@ class FactResponder extends Responder
     private function parseResponse(string $response, string $user, IrcChannel $channel, string $message): string
     {
         // Replace %randomuser% with a random user in the channel.
-        $response = str_replace('%randomuser%', $channel->getUsers()[array_rand($channel->getUsers())], $response);
+        if (strpos($response, '%param:') !== false) {
+            $response = str_replace('%randomuser%', $channel->getUsers()[array_rand($channel->getUsers())], $response);
+        }
 
         // Replace %user% with the current users nickname.
         $response = str_replace('%user%', $user, $response);
