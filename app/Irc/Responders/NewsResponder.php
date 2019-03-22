@@ -21,18 +21,24 @@ class NewsResponder extends Responder
         if (empty($payload)) {
             return null;
         }
-        
-        return $this->throttle('news', 15, 1, function () use ($payload) {
+
+        return $this->throttle("news_$from", 120, 1, function () use ($payload) {
             $xml = json_decode(json_encode(simplexml_load_string(file_get_contents("https://news.google.com/rss/search?q=$payload&hl=nl&gl=BE&ceid=BE:nl"))));
 
             $news = null;
-            foreach ($xml->channel->item as $item) {
-                if ($news === null || strtotime($news->pubDate) < strtotime($item->pubDate)) {
-                    $news = $item;
+            if (isset($xml->channel) && isset($xml->channel->item)) {
+                foreach ($xml->channel->item as $item) {
+                    if ($news === null || strtotime($news->pubDate) < strtotime($item->pubDate)) {
+                        $news = $item;
+                    }
                 }
             }
 
-            return new Response(date('[Y-m-d H:i]', strtotime($news->pubDate)) . " $news->title\n$news->link");
+            if ($news !== null) {
+                return new Response(date('[Y-m-d H:i]', strtotime($news->pubDate)) . " $news->title\n$news->link");
+            } else {
+                return new Response("No news found for category `$payload`.");
+            }
         }, $from);
     }
 }

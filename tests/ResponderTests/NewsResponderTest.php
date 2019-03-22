@@ -24,4 +24,13 @@ class NewsResponderTest extends TestCase
         $this->assertNotNull($response);
         $this->assertContains("\n", $response->getMessage());
     }
+
+    public function testNoNewsFound()
+    {
+        $responder = new NewsResponder();
+        $response = $responder->handlePrivmsg('foo', new IrcChannel('#bar'), '!news mqlkjsfmjqlkdlkhqhlkgql');
+
+        $this->assertNotNull($response);
+        $this->assertEquals('No news found for category `mqlkjsfmjqlkdlkhqhlkgql`.', $response->getMessage());
+    }
 }

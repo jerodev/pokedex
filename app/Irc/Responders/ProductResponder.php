@@ -6,7 +6,7 @@ use App\Irc\Response;
 use Jerodev\PhpIrcClient\IrcChannel;
 
 /**
- *  Search for a product in several online stores
+ *  Search for a product in several online stores.
  *
  *  `!amazon {search string}`
  */
@@ -36,6 +36,7 @@ class ProductResponder extends Responder
     private function amazonSearch(string $search): ?Response
     {
         $search = urlencode($search);
+
         return new Response("https://www.amazon.de/s/?tag=tabfin0b-21&field-keywords=$search");
     }
 }
