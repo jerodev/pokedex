@@ -37,7 +37,7 @@ class NewsResponder extends Responder
             if ($news !== null) {
                 return new Response(date('[Y-m-d H:i]', strtotime($news->pubDate)) . " $news->title\n$news->link");
             } else {
-                return new Response("No news found for category `$payload`.");
+                return new Response('No news found for category `' . urldecode($payload) . '`.');
             }
         }, $from);
     }

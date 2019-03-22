@@ -48,7 +48,7 @@ abstract class Responder
                 $minutes = round($time / 60);
 
                 if ($nickname !== null) {
-                    return new Response($throttleReason ?? "This command can only be executed $limit times every $minutes minutes.", $nickname);
+                    return new Response($throttleReason ?? "This command can only be executed $limit time(s) every $minutes minutes.", $nickname);
                 } else {
                     return null;
                 }

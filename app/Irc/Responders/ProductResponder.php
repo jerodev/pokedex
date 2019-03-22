@@ -23,8 +23,7 @@ class ProductResponder extends Responder
             return null;
         }
 
-        switch ($data[0])
-        {
+        switch ($data[0]) {
             case '!amazon':
                 return $this->amazonSearch($data[1]);
                 break;
