@@ -25,7 +25,7 @@ class ProductResponderTest extends TestCase
         $this->assertContains('amazon.de', $response->getMessage());
         $this->assertContains('&field-keywords=Terraforming+Mars', $response->getMessage());
     }
-	
+
     public function testBolSearch()
     {
         $responder = new ProductResponder();
