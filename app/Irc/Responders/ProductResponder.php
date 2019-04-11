@@ -28,8 +28,8 @@ class ProductResponder extends Responder
                 return $this->amazonSearch($data[1]);
                 break;
 				
-		    case '!bol':
-		        return $this->bolSearch($data[1]);
+            case '!bol':
+                return $this->bolSearch($data[1]);
                 break;
         }
 
@@ -43,7 +43,7 @@ class ProductResponder extends Responder
         return new Response("https://www.amazon.de/s/?tag=tabfin0b-21&field-keywords=$search");
     }
 	
-	private function bolSearch(string $search): ?Response
+    private function bolSearch(string $search): ?Response
     {
         $search = urlencode($search);
 
