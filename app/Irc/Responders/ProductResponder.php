@@ -28,8 +28,8 @@ class ProductResponder extends Responder
                 return $this->amazonSearch($data[1]);
                 break;
 				
-			case '!bol':
-				return $this->bolSearch($data[1]);
+		    case '!bol':
+		        return $this->bolSearch($data[1]);
                 break;
         }
 
