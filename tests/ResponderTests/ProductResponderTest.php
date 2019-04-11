@@ -25,4 +25,14 @@ class ProductResponderTest extends TestCase
         $this->assertContains('amazon.de', $response->getMessage());
         $this->assertContains('&field-keywords=Terraforming+Mars', $response->getMessage());
     }
+	
+	public function testBolSearch()
+    {
+        $responder = new ProductResponder();
+        $response = $responder->handlePrivmsg('foo', new IrcChannel('#bar'), '!bol Terraforming Mars');
+
+        $this->assertNotNull($response);
+        $this->assertContains('bol.com', $response->getMessage());
+        $this->assertContains('/zoekresultaten/Ntt/$search/Terraforming+Mars', $response->getMessage());
+    }
 }
