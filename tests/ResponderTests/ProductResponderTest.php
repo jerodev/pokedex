@@ -33,6 +33,6 @@ class ProductResponderTest extends TestCase
 
         $this->assertNotNull($response);
         $this->assertContains('bol.com', $response->getMessage());
-        $this->assertContains('/zoekresultaten/Ntt/$search/Terraforming+Mars', $response->getMessage());
+        $this->assertContains('/zoekresultaten/Ntt/Terraforming+Mars', $response->getMessage());
     }
 }
