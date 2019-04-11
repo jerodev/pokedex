@@ -27,6 +27,10 @@ class ProductResponder extends Responder
             case '!amazon':
                 return $this->amazonSearch($data[1]);
                 break;
+				
+			case '!bol':
+				return $this->bolSearch($data[1]);
+                break;
         }
 
         return null;
@@ -37,5 +41,12 @@ class ProductResponder extends Responder
         $search = urlencode($search);
 
         return new Response("https://www.amazon.de/s/?tag=tabfin0b-21&field-keywords=$search");
+    }
+	
+	private function bolSearch(string $search): ?Response
+    {
+        $search = urlencode($search);
+
+        return new Response("https://www.bol.com/nl/s/algemeen/zoekresultaten/Ntt/$search");
     }
 }
