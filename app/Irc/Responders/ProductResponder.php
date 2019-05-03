@@ -46,7 +46,8 @@ class ProductResponder extends Responder
     private function bolSearch(string $search): ?Response
     {
         $search = urlencode($search);
+        $searchurl = urlencode("https://www.bol.com/nl/s/algemeen/zoekresultaten/Ntt/$search");
 
-        return new Response("https://www.bol.com/nl/s/algemeen/zoekresultaten/Ntt/$search");
+        return new Response("https://partner.bol.com/click/click?p=1&t=url&s=39710&f=TXL&url=$searchurl&name=$search");
     }
 }
