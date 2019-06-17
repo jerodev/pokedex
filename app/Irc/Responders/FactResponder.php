@@ -122,14 +122,21 @@ class FactResponder extends Responder
     private function parseResponse(string $response, string $user, IrcChannel $channel, string $message): string
     {
         // Replace %randomuser% with a random user in the channel.
-        if (strpos($response, '%randomuser%') !== false) {
-            $response = str_replace('%randomuser%', $channel->getUsers()[array_rand($channel->getUsers())], $response);
+        if (($count = substr_count($response, '%randomuser%')) > 0) {
+            $userkeys = array_rand($channel->getUsers(), $count);
+            $response = preg_replace_callback(
+                '/\%randomuser\%/',
+                function () use ($channel, &$userkeys) {
+                    return $channel->getUsers()[array_pop($userkeys)];
+                },
+                $response
+            );
         }
 
         // Replace %user% with the current users nickname.
         $response = str_replace('%user%', $user, $response);
 
-        // Replace %param% with the payload after the command
+        // Replace %param% with the payload following the command
         $param = trim(strstr($message, ' '));
         $response = str_replace('%param%', $param, $response);
 
