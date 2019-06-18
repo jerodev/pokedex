@@ -34,7 +34,7 @@ class UserPointsRepository extends Repository
             'channel_id' => $channelId,
             'user_id' => $toId,
             'voter_id' => $fromId,
-            'is_upvote' => $is_upvote
+            'is_upvote' => $is_upvote,
         ]);
     }
 

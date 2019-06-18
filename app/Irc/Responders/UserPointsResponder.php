@@ -73,8 +73,8 @@ class UserPointsResponder extends Responder
         // Validate the user that is voted on
         $to = trim(strstr($message, ' '));
         if (strpos($to, ' ') !== false || empty($to)) {
-            return null;
-        } else if ($from === $to) {
+            return;
+        } elseif ($from === $to) {
             return new Response('Self voting is not allowed!', $from);
         }
 
