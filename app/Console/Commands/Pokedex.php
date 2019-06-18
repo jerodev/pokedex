@@ -12,6 +12,7 @@ use App\Irc\Responders\ProductResponder;
 use App\Irc\Responders\QuestionResponderEN;
 use App\Irc\Responders\QuestionResponderNL;
 use App\Irc\Responders\TimeResponder;
+use App\Irc\Responders\UserPointsResponder;
 use Illuminate\Console\Command;
 
 class Pokedex extends Command
@@ -59,6 +60,7 @@ class Pokedex extends Command
         $bot->addResponder($channels, new QuestionResponderEN());
         $bot->addResponder($channels, new QuestionResponderNL());
         $bot->addResponder($channels, new TimeResponder());
+        $bot->addResponder($channels, new UserPointsResponder());
         $bot->addResponder($channels, new FactResponder());
         $bot->addResponder($channels, new Logger());
         $bot->connect();
