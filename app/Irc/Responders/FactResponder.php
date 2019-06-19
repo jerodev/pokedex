@@ -124,6 +124,10 @@ class FactResponder extends Responder
         // Replace %randomuser% with a random user in the channel.
         if (($count = substr_count($response, '%randomuser%')) > 0) {
             $userkeys = array_rand($channel->getUsers(), $count);
+            if (!is_array($userkeys)) {
+                $userkeys = [$userkeys];
+            }
+
             $response = preg_replace_callback(
                 '/\%randomuser\%/',
                 function () use ($channel, &$userkeys) {
