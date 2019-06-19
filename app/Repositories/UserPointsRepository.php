@@ -28,7 +28,11 @@ class UserPointsRepository extends Repository
     {
         $channelId = $this->channelRepository->getChannelId($channel);
         $fromId = $this->userRepository->getUserId($from);
-        $toId = $this->userRepository->getUserId($to);
+        $toId = $this->userRepository->getUserId($to, false);
+
+        if ($toId === null) {
+            return;
+        }
 
         parent::query(self::table)->insert([
             'channel_id' => $channelId,

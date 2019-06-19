@@ -7,7 +7,7 @@ class UserRepository extends Repository
     /** @var string */
     private const table = 'users';
 
-    public function getUserId(string $nickname): int
+    public function getUserId(string $nickname, bool $createIfNotExists = true): ?int
     {
         $id = parent::query(self::table)
             ->whereNickname($nickname)
@@ -19,7 +19,7 @@ class UserRepository extends Repository
             })
             ->pluck('id')
             ->first();
-        if ($id === null) {
+        if ($id === null && $createIfNotExists) {
             $id = parent::query(self::table)->insertGetId(['nickname' => $nickname]);
         }
 
