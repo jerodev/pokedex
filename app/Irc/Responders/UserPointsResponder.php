@@ -84,5 +84,7 @@ class UserPointsResponder extends Responder
         }
 
         $this->userPointsRepository->castVote($from, $to, $channel, $is_upvote);
+        
+        return $this->returnUserPoints($message, $channel, $from);
     }
 }
