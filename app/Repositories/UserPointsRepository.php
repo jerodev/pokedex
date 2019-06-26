@@ -57,6 +57,26 @@ class UserPointsRepository extends Repository
             ->count();
     }
 
+    public function getTopUsers(string $channel, bool $high = true)
+    {
+        $channelId = $this->channelRepository->getChannelId($channel);
+
+        return parent::query(self::table)
+            ->where('channel_id', $channelId)
+            ->groupBy('user_id')
+            ->join('users', 'users.id', '=', self::table . '.user_id')
+            ->selectRaw('MAX(users.nickname) as nickname')
+            ->selectRaw('SUM(CASE is_upvote WHEN 0 THEN -1 ELSE 1 END) as score')
+            ->when($high, function ($query) {
+                $query->orderByDesc('score');
+            })
+            ->when(!$high, function ($query) {
+                $query->orderBy('score');
+            })
+            ->take(5)
+            ->get();
+    }
+
     /**
      *  Get the karma score for a single user.
      */

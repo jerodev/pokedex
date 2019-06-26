@@ -43,14 +43,21 @@ class UserPointsResponder extends Responder
                 return $this->returnUserPoints($message, $to->getName(), $from);
                 break;
 
-            case 'topusers':
-                break;
-
-            case 'badusers':
+            case 'highscore':
+            case 'lowscore':
+                return $this->returnHighScore($to->getName(), $command === 'highscore');
                 break;
         }
 
         return null;
+    }
+
+    private function returnHighScore(string $channel, bool $high = true): ?Response
+    {
+        $topUsers = $this->userPointsRepository->getTopUsers($channel, $high);
+        $userString = implode(', ', $topUsers->map(function ($u) { return "$u->nickname ($u->score)"; })->toArray());
+
+        return new Response(($high ? 'top' : 'lowest') . " users on $channel: " . $userString);
     }
 
     private function returnUserPoints(string $message, string $channel, string $from): ?Response
@@ -84,7 +91,7 @@ class UserPointsResponder extends Responder
         }
 
         $this->userPointsRepository->castVote($from, $to, $channel, $is_upvote);
-        
+
         return $this->returnUserPoints($message, $channel, $from);
     }
 }
