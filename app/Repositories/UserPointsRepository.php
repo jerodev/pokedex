@@ -83,7 +83,10 @@ class UserPointsRepository extends Repository
     public function getUserScore(string $nickname, string $channel): int
     {
         $channelId = $this->channelRepository->getChannelId($channel);
-        $userId = $this->userRepository->getUserId($nickname);
+        $userId = $this->userRepository->getUserId($nickname, false);
+
+        if($userId === null)
+            retun 0;
 
         return parent::query(self::table)
             ->where('user_id', $userId)
