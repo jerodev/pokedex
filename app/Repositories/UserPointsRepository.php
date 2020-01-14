@@ -86,8 +86,10 @@ class UserPointsRepository extends Repository
         $userId = $this->userRepository->getUserId($nickname, false);
 
         if($userId === null)
+        {
             return 0;
-
+        }
+        
         return parent::query(self::table)
             ->where('user_id', $userId)
             ->where('channel_id', $channelId)
