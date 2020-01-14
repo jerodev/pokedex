@@ -85,7 +85,7 @@ class UserPointsRepository extends Repository
         $channelId = $this->channelRepository->getChannelId($channel);
         $userId = $this->userRepository->getUserId($nickname, false);
 
-        if($userId === null) {
+        if ($userId === null) {
             return 0;
         }
         
