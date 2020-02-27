@@ -62,5 +62,4 @@ class ProductResponder extends Responder
 
         return new Response("https://duckduckgo.com/?q=$search");
     }
-
 }
