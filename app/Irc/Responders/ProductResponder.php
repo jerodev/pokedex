@@ -31,6 +31,10 @@ class ProductResponder extends Responder
             case '!bol':
                 return $this->bolSearch($data[1]);
                 break;
+
+            case '!ddg':
+                return $this->duckDuckGoSearch($data[1]);
+                break;
         }
 
         return null;
@@ -48,6 +52,15 @@ class ProductResponder extends Responder
         $search = urlencode($search);
         $searchurl = urlencode("https://www.bol.com/nl/s/algemeen/zoekresultaten/Ntt/$search");
 
+        // just using the partner link here -_-
         return new Response("https://partner.bol.com/click/click?p=1&t=url&s=39710&f=TXL&url=$searchurl&name=$search");
     }
+
+    private function duckDuckGoSearch(string $search): ?Response
+    {
+        $search = urlencode($search);
+
+        return new Response("https://duckduckgo.com/?q=$search");
+    }
+
 }
