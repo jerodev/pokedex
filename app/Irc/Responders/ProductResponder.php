@@ -52,7 +52,6 @@ class ProductResponder extends Responder
         $search = urlencode($search);
         $searchurl = urlencode("https://www.bol.com/nl/s/algemeen/zoekresultaten/Ntt/$search");
 
-        // just using the partner link here -_-
         return new Response("https://partner.bol.com/click/click?p=1&t=url&s=39710&f=TXL&url=$searchurl&name=$search");
     }
 
